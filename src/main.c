@@ -53,6 +53,8 @@ int main()
 	uint16_t oldx = x;
 	uint16_t oldy = y;
 
+	uint16_t continuation_condition = 0;
+
 	uint16_t invader_x = 0;
 	uint16_t oldix = invader_x;
 	uint16_t target = 115;
@@ -65,11 +67,23 @@ int main()
 	initClock();
 	initSysTick();
 	setupIO();
-	// putImage(0,0,12,16,space_invader,0,0);
+	
 	putImage(x,y,12,16,space_ship,0,0);
 
 	while(1)
 	{
+		// Code for welcome screen.
+		while(continuation_condition != 1){
+			printText("Space Invaders",128/2-47, 160/2-30, 255, 0);
+			printText("Push down to start", 2, 160/2, 255, 0);
+
+			if ( (GPIOA->IDR & (1 << 11)) == 0){
+				fillRectangle(0,160/2-30,160,40, 0);
+				continuation_condition = 1;
+			}
+		}
+		// End of code for welcome screen.
+
 		// Code to make the invader move from side to side on the screen.
 		switch(invader_x){
 			case 115:
@@ -120,7 +134,8 @@ int main()
 				vmoved = 1;
 			}
 
-			printTextX2("SHIELD/BOMB!", 10, 60, RGBToWord(0xff,0xff,0), 0);
+			//printTextX2("SHIELD/BOMB!", 10, 60, RGBToWord(0xff,0xff,0), 0);
+			//putImage(x, 124, 16, 12, temp_proj, 1,1);
 		}
 		if ( (GPIOA->IDR & (1 << 8)) == 0) // up pressed
 		{			
@@ -142,6 +157,8 @@ int main()
 			fillRectangle(projectile_x, projectile_y,12,16,0);
 			// End of projectile code.
 		}
+
+		// Clean this code (Remove the hmoved elements as the rocket only goes side to side. The toggle can be fully removed from the code).
 		if ((vmoved) || (hmoved))
 		{
 			// only redraw if there has been some movement (reduces flicker)
