@@ -38,10 +38,13 @@ const uint16_t space_ship[] =
 	0,0,0,0,0,65535,65535,0,0,0,0,0,0,0,0,0,0,65535,65535,0,0,0,0,0,0,0,0,0,65535,65535,65535,65535,0,0,0,0,0,0,0,0,65535,65535,65535,65535,0,0,0,0,0,0,0,0,65535,65535,65535,65535,0,0,0,0,0,0,0,0,65535,65535,65535,65535,0,0,0,0,0,0,0,0,65535,65535,65535,65535,0,0,0,0,0,0,0,65535,65535,65535,65535,65535,65535,0,0,0,0,0,0,65535,65535,65535,65535,65535,65535,0,0,0,0,0,0,65535,0,65535,65535,0,65535,0,0,0,0,0,0,65535,65535,65535,65535,65535,65535,0,0,0,65535,0,0,65535,65535,65535,65535,65535,65535,0,0,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,0,0,0,65535,65535,0,0,0,65535,65535,0,65535,0,0,0,65535,65535,0,0,0,65535,0,
 };
 
+const uint16_t temp_proj[] = 
+{
+	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9293,9293,9293,9293,0,0,0,0,0,0,0,0,9293,9293,9293,9293,0,0,0,0,0,0,0,0,9293,9293,9293,9293,0,0,0,0,0,0,0,0,9293,9293,9293,9293,0,0,0,0,0,0,0,0,9293,9293,9293,9293,0,0,0,0,0,0,0,0,9293,9293,9293,9293,0,0,0,0,0,0,0,0,9293,9293,9293,9293,0,0,0,0,0,0,0,0,9293,9293,9293,9293,0,0,0,0,0,0,0,0,9293,9293,9293,9293,0,0,0,0,0,0,0,0,9293,9293,9293,9293,0,0,0,0,0,0,0,0,9293,9293,9293,9293,0,0,0,0,0,0,0,0,9293,9293,9293,9293,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+};
+
 int main()
 {
-	int hinverted = 0;
-	int vinverted = 0;
 	int toggle = 0;
 	int hmoved = 0;
 	int vmoved = 0;
@@ -49,34 +52,64 @@ int main()
 	uint16_t y = 140;
 	uint16_t oldx = x;
 	uint16_t oldy = y;
+
+	uint16_t invader_x = 0;
+	uint16_t oldix = invader_x;
+	uint16_t target = 115;
+
+	uint16_t projectile_x = 0;
+	uint16_t projectile_y = 124;
+	uint16_t oldpx = projectile_x;
+	uint16_t oldpy = projectile_y;
+
 	initClock();
 	initSysTick();
 	setupIO();
-	//putImage(20,80,12,16,dg1,0,0);
-	putImage(20,80,12,16,space_invader,0,0);
+	// putImage(0,0,12,16,space_invader,0,0);
+	putImage(x,y,12,16,space_ship,0,0);
 
-	
 	while(1)
 	{
+		// Code to make the invader move from side to side on the screen.
+		switch(invader_x){
+			case 115:
+				target = 1;
+				break;
+			case 1:
+				target = 115;
+				break;
+		}	
+
+		if(invader_x != target){
+			fillRectangle(oldix,0,12,16,0);
+			oldix = invader_x;
+			putImage(invader_x, 0, 12,16,space_invader,0,0);
+			
+			if(target == 115){
+				invader_x = invader_x + 1;
+			} else {
+				invader_x = invader_x - 1;
+			}
+		}
+		// End of invader movement code.
+
 		hmoved = vmoved = 0;
-		hinverted = vinverted = 0;
+
 		if ((GPIOB->IDR & (1 << 4))==0) // right pressed
 		{					
-			if (x < 110)
+			if (x < 115)
 			{
 				x = x + 3;
 				hmoved = 1;
-				hinverted=0;
 			}						
 		}
 		if ((GPIOB->IDR & (1 << 5))==0) // left pressed
 		{			
 			
-			if (x > 10)
+			if (x > 1)
 			{
 				x = x - 3;
 				hmoved = 1;
-				hinverted=1;
 			}			
 		}
 		if ( (GPIOA->IDR & (1 << 11)) == 0) // down pressed
@@ -85,7 +118,6 @@ int main()
 			{
 				// y = y + 1;			
 				vmoved = 1;
-				vinverted = 0;
 			}
 
 			printTextX2("SHIELD/BOMB!", 10, 60, RGBToWord(0xff,0xff,0), 0);
@@ -96,10 +128,19 @@ int main()
 			{
 				// y = y - 1;
 				vmoved = 1;
-				vinverted = 1;
 			}
 
-			printTextX2("SHOOT!", 10, 20, RGBToWord(0xff,0xff,0), 0);
+			// Code to shoot the projectile from the spaceship.
+			projectile_x = x;
+			projectile_y = 124;
+			while(projectile_y > 0){
+				fillRectangle(oldpx,oldpy,12,16,0);
+				oldpy = projectile_y;
+				putImage(projectile_x, projectile_y, 12,16,temp_proj,0,0);
+				projectile_y = projectile_y - 1;
+			}
+			fillRectangle(projectile_x, projectile_y,12,16,0);
+			// End of projectile code.
 		}
 		if ((vmoved) || (hmoved))
 		{
@@ -120,6 +161,7 @@ int main()
 			{
 				putImage(x,y,12,16,space_ship,0,0);
 			}
+
 			// Now check for an overlap by checking to see if ANY of the 4 corners of deco are within the target area
 			if (isInside(20,80,12,16,x,y) || isInside(20,80,12,16,x+12,y) || isInside(20,80,12,16,x,y+16) || isInside(20,80,12,16,x+12,y+16) )
 			{
