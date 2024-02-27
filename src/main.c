@@ -1,5 +1,6 @@
 #include <stm32f031x6.h>
 #include "display.h"
+
 void initClock(void);
 void initSysTick(void);
 void SysTick_Handler(void);
@@ -8,6 +9,11 @@ void setupIO();
 int isInside(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h, uint16_t px, uint16_t py);
 void enablePullUp(GPIO_TypeDef *Port, uint32_t BitNumber);
 void pinMode(GPIO_TypeDef *Port, uint32_t BitNumber, uint32_t Mode);
+
+int UpPressed(void);
+int DownPressed(void);
+int LeftPressed(void);
+int RightPressed(void);
 
 volatile uint32_t milliseconds;
 
@@ -64,6 +70,9 @@ int main()
 	uint16_t oldpx = projectile_x;
 	uint16_t oldpy = projectile_y;
 
+	uint16_t shot = 0;
+	uint16_t enemy_projectile_y = 16;
+
 	initClock();
 	initSysTick();
 	setupIO();
@@ -107,9 +116,26 @@ int main()
 		}
 		// End of invader movement code.
 
+		//Invader shoot code (Make the projectile slower and change the 60 to rand() so it shoots randomly)
+		if(invader_x == 60){
+			enemy_projectile_y = 16;
+			shot = 1;
+		}
+
+		while(shot == 1){
+			putImage(invader_x, enemy_projectile_y, 12,16,temp_proj, 0,0);
+			enemy_projectile_y = enemy_projectile_y + 1;
+			delay(10);
+
+			if(enemy_projectile_y >= 140){
+				shot = 0;
+			}
+		}
+		//End of invader shoot code.
+
 		hmoved = vmoved = 0;
 
-		if ((GPIOB->IDR & (1 << 4))==0) // right pressed
+		if (RightPressed() == 1) // right pressed
 		{					
 			if (x < 115)
 			{
@@ -117,7 +143,7 @@ int main()
 				hmoved = 1;
 			}						
 		}
-		if ((GPIOB->IDR & (1 << 5))==0) // left pressed
+		if (LeftPressed() == 1) // left pressed
 		{			
 			
 			if (x > 1)
@@ -126,7 +152,7 @@ int main()
 				hmoved = 1;
 			}			
 		}
-		if ( (GPIOA->IDR & (1 << 11)) == 0) // down pressed
+		if (DownPressed() == 1) // down pressed
 		{
 			if (y < 140)
 			{
@@ -137,7 +163,7 @@ int main()
 			//printTextX2("SHIELD/BOMB!", 10, 60, RGBToWord(0xff,0xff,0), 0);
 			//putImage(x, 124, 16, 12, temp_proj, 1,1);
 		}
-		if ( (GPIOA->IDR & (1 << 8)) == 0) // up pressed
+		if (UpPressed() == 1) // up pressed
 		{			
 			if (y > 16)
 			{
@@ -149,7 +175,6 @@ int main()
 			projectile_x = x;
 			projectile_y = 124;
 			while(projectile_y > 0){
-				fillRectangle(oldpx,oldpy,12,16,0);
 				oldpy = projectile_y;
 				putImage(projectile_x, projectile_y, 12,16,temp_proj,0,0);
 				projectile_y = projectile_y - 1;
@@ -253,7 +278,7 @@ void pinMode(GPIO_TypeDef *Port, uint32_t BitNumber, uint32_t Mode)
 int isInside(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h, uint16_t px, uint16_t py)
 {
 	// checks to see if point px,py is within the rectange defined by x,y,w,h
-	uint16_t x2,y2;
+	uint16_t x2,y2; 	
 	x2 = x1+w;
 	y2 = y1+h;
 	int rvalue = 0;
@@ -278,4 +303,40 @@ void setupIO()
 	enablePullUp(GPIOB,5);
 	enablePullUp(GPIOA,11);
 	enablePullUp(GPIOA,8);
+}
+
+int DownPressed(){
+	if ( (GPIOA->IDR & (1 << 11)) == 0){
+		return 1;
+	}
+	else{
+		return 0;
+	}
+}
+
+int UpPressed(){
+	if ((GPIOA->IDR & (1 << 8)) == 0){
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
+
+int LeftPressed(){
+	if((GPIOB->IDR & (1 << 5))==0){
+		return 1;
+	}
+	else{
+		return 0;
+	}
+}
+
+int RightPressed(){
+	if((GPIOB->IDR & (1 << 4))==0){
+		return 1;
+	}
+	else{
+		return 0;
+	}
 }
