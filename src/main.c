@@ -1,5 +1,7 @@
 #include <stm32f031x6.h>
 #include "display.h"
+#include "sound.h"
+#include "musical_notes.h"
 
 void initClock(void);
 void initSysTick(void);
@@ -14,6 +16,8 @@ int UpPressed(void);
 int DownPressed(void);
 int LeftPressed(void);
 int RightPressed(void);
+
+void playMusic(void);
 
 volatile uint32_t milliseconds;
 
@@ -73,9 +77,14 @@ int main()
 	uint16_t shot = 0;
 	uint16_t enemy_projectile_y = 16;
 
+	uint16_t speed = 1;
+	// uint16_t stage = 0;
+	// uint16_t score = 0;
+
 	initClock();
 	initSysTick();
 	setupIO();
+	initSound();
 	
 	putImage(x,y,12,16,space_ship,0,0);
 
@@ -93,6 +102,10 @@ int main()
 		}
 		// End of code for welcome screen.
 
+		//Code for a simple theme song
+		playMusic();
+		//End of code for the song
+
 		// Code to make the invader move from side to side on the screen.
 		switch(invader_x){
 			case 115:
@@ -109,9 +122,10 @@ int main()
 			putImage(invader_x, 0, 12,16,space_invader,0,0);
 			
 			if(target == 115){
-				invader_x = invader_x + 1;
+				invader_x = invader_x + speed;
+				
 			} else {
-				invader_x = invader_x - 1;
+				invader_x = invader_x - speed;
 			}
 		}
 		// End of invader movement code.
@@ -178,6 +192,7 @@ int main()
 				oldpy = projectile_y;
 				putImage(projectile_x, projectile_y, 12,16,temp_proj,0,0);
 				projectile_y = projectile_y - 1;
+				delay(10);
 			}
 			fillRectangle(projectile_x, projectile_y,12,16,0);
 			// End of projectile code.
@@ -339,4 +354,23 @@ int RightPressed(){
 	else{
 		return 0;
 	}
+}
+
+void playMusic(){
+	playNote(C0);
+	delay(10);
+	playNote(D0);
+	delay(10);
+	playNote(E0);
+	delay(10);
+	playNote(F0);
+	delay(10);
+	playNote(G0);
+	delay(10);
+	playNote(A0);
+	delay(10);
+	playNote(B0);
+	delay(10);
+	playNote(A0);
+	delay(10);
 }
