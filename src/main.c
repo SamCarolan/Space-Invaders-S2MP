@@ -70,13 +70,11 @@ int main()
 	uint16_t invader_x = rand() % 116;
 	uint16_t invader_y = 0;
 	uint16_t oldix = invader_x;
-	// uint16_t oldiy = invader_y;
-	// uint16_t target = 115;
+	uint16_t shoot = 0;
 
-	// uint16_t projectile_x = 0;
-	// uint16_t projectile_y = 124;
-	// uint16_t oldpx = projectile_x;
-	// uint16_t oldpy = projectile_y;
+	uint16_t projectile_x;
+	uint16_t projectile_y;
+	uint16_t projectile_active = 0;
 
 	uint16_t speed = 1;
 	uint16_t lose = 0;
@@ -98,7 +96,7 @@ int main()
 			printText("Space Invaders",128/2-47, 160/2-30, 255, 0);
 			printText("Push down to start", 2, 160/2, 255, 0);
 
-			if ( (GPIOA->IDR & (1 << 11)) == 0){
+			if (DownPressed() == 1){
 				fillRectangle(0,160/2-30,160,40, 0);
 				continuation_condition = 1;
 			}
@@ -132,6 +130,7 @@ int main()
 		if (isInside(x, y, 12, 16, invader_x, invader_y) || isInside(x, y, 12, 16, invader_x + 12, invader_y) || isInside(x, y, 12, 16, invader_x, invader_y + 16) || isInside(x, y, 12, 16, invader_x + 12, invader_y + 16)){
 			lose++;
 		}
+		//End of player Alien collision code.
 
 
 		hmoved = vmoved = 0;
@@ -171,11 +170,31 @@ int main()
 				vmoved = 1;
 			}
 		}
+		if(receivedChar == ' '){
+			printText("Shoot",128/2-15, 160/2-30, 255, 0);
+			projectile_x = x;
+			shoot++;
+		}
 
 		// Reset received character
 		receivedChar = 0;
 		charReceived = 0;
 		//End of Serial Communications Code.
+
+		if (shoot != 0 && projectile_active == 0) {
+			shoot = 0;
+			projectile_y = y - 16;
+			projectile_active = 1;
+		}
+
+		if (projectile_active != 0) {
+			putImage(projectile_x, projectile_y, 12, 16, temp_proj, 0, 0);
+			projectile_y--;
+			if (projectile_y <= 0) {
+				projectile_active = 0;
+				fillRectangle(x, 0, 12, 16, 0);
+			}
+		}
 
 		if ((vmoved) || (hmoved))
 		{
@@ -196,12 +215,6 @@ int main()
 			{
 				putImage(x,y,12,16,space_ship,0,0);
 			}
-
-			// Now check for an overlap by checking to see if ANY of the 4 corners of deco are within the target area
-			// if (isInside(20,80,12,16,x,y) || isInside(20,80,12,16,x+12,y) || isInside(20,80,12,16,x,y+16) || isInside(20,80,12,16,x+12,y+16) )
-			// {
-			// 	printTextX2("GLUG!", 10, 20, RGBToWord(0xff,0xff,0), 0);
-			// }
 		}		
 		delay(50);
 	}
