@@ -1,4 +1,5 @@
 #include <stm32f031x6.h>
+#include <stdlib.h>
 #include "display.h"
 #include "sound.h"
 #include "musical_notes.h"
@@ -69,16 +70,13 @@ int main()
 	uint16_t invader_x = rand() % 116;
 	uint16_t invader_y = 0;
 	uint16_t oldix = invader_x;
-	uint16_t oldiy = invader_y;
-	uint16_t target = 115;
+	// uint16_t oldiy = invader_y;
+	// uint16_t target = 115;
 
-	uint16_t projectile_x = 0;
-	uint16_t projectile_y = 124;
-	uint16_t oldpx = projectile_x;
-	uint16_t oldpy = projectile_y;
-
-	uint16_t shot = 0;
-	uint16_t enemy_projectile_y = 16;
+	// uint16_t projectile_x = 0;
+	// uint16_t projectile_y = 124;
+	// uint16_t oldpx = projectile_x;
+	// uint16_t oldpy = projectile_y;
 
 	uint16_t speed = 1;
 	uint16_t lose = 0;
@@ -122,11 +120,19 @@ int main()
 		if(invader_y == 146){
 			lose++;
 		}
+		// End of invader movement code.
 
+		//Code for Lose screen.
 		while(lose != 0){
 			printText("LOSER",128/2-15, 160/2-30, 255, 0);
 		}
-		// End of invader movement code.
+		//End of code for Lose screen.
+
+		//Code to see if the Alien and the player collides.
+		if (isInside(x, y, 12, 16, invader_x, invader_y) || isInside(x, y, 12, 16, invader_x + 12, invader_y) || isInside(x, y, 12, 16, invader_x, invader_y + 16) || isInside(x, y, 12, 16, invader_x + 12, invader_y + 16)){
+			lose++;
+		}
+
 
 		hmoved = vmoved = 0;
 
@@ -192,10 +198,10 @@ int main()
 			}
 
 			// Now check for an overlap by checking to see if ANY of the 4 corners of deco are within the target area
-			if (isInside(20,80,12,16,x,y) || isInside(20,80,12,16,x+12,y) || isInside(20,80,12,16,x,y+16) || isInside(20,80,12,16,x+12,y+16) )
-			{
-				//printTextX2("GLUG!", 10, 20, RGBToWord(0xff,0xff,0), 0);
-			}
+			// if (isInside(20,80,12,16,x,y) || isInside(20,80,12,16,x+12,y) || isInside(20,80,12,16,x,y+16) || isInside(20,80,12,16,x+12,y+16) )
+			// {
+			// 	printTextX2("GLUG!", 10, 20, RGBToWord(0xff,0xff,0), 0);
+			// }
 		}		
 		delay(50);
 	}
