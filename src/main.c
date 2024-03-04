@@ -2,6 +2,7 @@
 #include "display.h"
 #include "sound.h"
 #include "musical_notes.h"
+#include "serial.h"
 
 void initClock(void);
 void initSysTick(void);
@@ -65,8 +66,10 @@ int main()
 
 	uint16_t continuation_condition = 0;
 
-	uint16_t invader_x = 0;
+	uint16_t invader_x = rand() % 116;
+	uint16_t invader_y = 0;
 	uint16_t oldix = invader_x;
+	uint16_t oldiy = invader_y;
 	uint16_t target = 115;
 
 	uint16_t projectile_x = 0;
@@ -78,6 +81,7 @@ int main()
 	uint16_t enemy_projectile_y = 16;
 
 	uint16_t speed = 1;
+	uint16_t lose = 0;
 	// uint16_t stage = 0;
 	// uint16_t score = 0;
 
@@ -85,6 +89,7 @@ int main()
 	initSysTick();
 	setupIO();
 	initSound();
+	initSerial();
 	
 	putImage(x,y,12,16,space_ship,0,0);
 
@@ -103,102 +108,69 @@ int main()
 		// End of code for welcome screen.
 
 		//Code for a simple theme song
-		playMusic();
+		//playMusic(); //Turn on for Demo
 		//End of code for the song
 
-		// Code to make the invader move from side to side on the screen.
-		switch(invader_x){
-			case 115:
-				target = 1;
-				break;
-			case 1:
-				target = 115;
-				break;
-		}	
+		// Code to make the invader fall down screen.
+		fillRectangle(oldix,0,12,16,0);
+		oldix = invader_x;
+		putImage(invader_x, invader_y, 12,16,space_invader,0,0);
+		
+		if(invader_y < 146){
+			invader_y = invader_y + speed;
+		}
+		if(invader_y == 146){
+			lose++;
+		}
 
-		if(invader_x != target){
-			fillRectangle(oldix,0,12,16,0);
-			oldix = invader_x;
-			putImage(invader_x, 0, 12,16,space_invader,0,0);
-			
-			if(target == 115){
-				invader_x = invader_x + speed;
-				
-			} else {
-				invader_x = invader_x - speed;
-			}
+		while(lose != 0){
+			printText("LOSER",128/2-15, 160/2-30, 255, 0);
 		}
 		// End of invader movement code.
 
-		//Invader shoot code (Make the projectile slower and change the 60 to rand() so it shoots randomly)
-		if(invader_x == 60){
-			enemy_projectile_y = 16;
-			shot = 1;
-		}
-
-		while(shot == 1){
-			putImage(invader_x, enemy_projectile_y, 12,16,temp_proj, 0,0);
-			enemy_projectile_y = enemy_projectile_y + 1;
-			delay(10);
-
-			if(enemy_projectile_y >= 140){
-				shot = 0;
-			}
-		}
-		//End of invader shoot code.
-
 		hmoved = vmoved = 0;
 
-		if (RightPressed() == 1) // right pressed
-		{					
-			if (x < 115)
-			{
+		//Serial Communications Code.
+		char receivedChar = 0;
+		static int charReceived = 0;
+
+		// Check if USART has received any character
+		if (USART1->ISR & USART_ISR_RXNE) {
+			receivedChar = USART1->RDR; // Read the character
+			charReceived = 1; // Set the flag
+		}
+
+		// Check button presses and the received character
+		if (RightPressed() == 1 || receivedChar == 'd' || receivedChar == 'D') {
+			if (x < 115) {
 				x = x + 3;
 				hmoved = 1;
-			}						
-		}
-		if (LeftPressed() == 1) // left pressed
-		{			
-			
-			if (x > 1)
-			{
+			}
+		} 
+		if (LeftPressed() == 1 || receivedChar == 'a' || receivedChar == 'A') {
+			if (x > 1) {
 				x = x - 3;
 				hmoved = 1;
-			}			
-		}
-		if (DownPressed() == 1) // down pressed
-		{
-			if (y < 140)
-			{
-				// y = y + 1;			
+			}
+		} 
+		if (UpPressed() == 1 || receivedChar == 'w' || receivedChar == 'W') {
+			if (y > 16) {
+				y = y - 3;
 				vmoved = 1;
 			}
-
-			//printTextX2("SHIELD/BOMB!", 10, 60, RGBToWord(0xff,0xff,0), 0);
-			//putImage(x, 124, 16, 12, temp_proj, 1,1);
-		}
-		if (UpPressed() == 1) // up pressed
-		{			
-			if (y > 16)
-			{
-				// y = y - 1;
+		} 
+		if (DownPressed() == 1 || receivedChar == 's' || receivedChar == 'S') {
+			if (y < 140) {
+				y = y + 3;
 				vmoved = 1;
 			}
-
-			// Code to shoot the projectile from the spaceship.
-			projectile_x = x;
-			projectile_y = 124;
-			while(projectile_y > 0){
-				oldpy = projectile_y;
-				putImage(projectile_x, projectile_y, 12,16,temp_proj,0,0);
-				projectile_y = projectile_y - 1;
-				delay(10);
-			}
-			fillRectangle(projectile_x, projectile_y,12,16,0);
-			// End of projectile code.
 		}
 
-		// Clean this code (Remove the hmoved elements as the rocket only goes side to side. The toggle can be fully removed from the code).
+		// Reset received character
+		receivedChar = 0;
+		charReceived = 0;
+		//End of Serial Communications Code.
+
 		if ((vmoved) || (hmoved))
 		{
 			// only redraw if there has been some movement (reduces flicker)
