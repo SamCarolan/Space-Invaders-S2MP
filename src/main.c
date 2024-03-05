@@ -73,14 +73,16 @@ int main()
 	uint16_t shoot = 0;
 
 	uint16_t projectile_x;
+	uint16_t old_projectile_x;
 	uint16_t projectile_y;
+	uint16_t old_projectile_y;
 	uint16_t projectile_active = 0;
 
 	uint16_t speed = 1;
 	uint16_t lose = 0;
 	uint16_t win = 0;
 	uint16_t invader_death = 0;
-	// uint16_t stage = 0;
+	uint16_t stage = 0;
 	uint16_t score = 0;
 
 	initClock();
@@ -113,8 +115,10 @@ int main()
 		printNumber(score,0,0,255,0);
 
 		if(score >= 5 && score < 10){
+			stage = 1;
 			speed = 2;
 		} else if(score >= 10 && score < 15){
+			stage = 2;
 			speed = 3;
 		} else if(score >= 15){
 			win++;
@@ -201,7 +205,10 @@ int main()
 		}
 		if(receivedChar == ' '){
 			printText("Shoot",128/2-15, 160/2-30, 255, 0);
+			old_projectile_x = projectile_x;
+			old_projectile_y = projectile_y;
 			projectile_x = x;
+			projectile_y = y - 16;
 			shoot++;
 		}
 
@@ -213,16 +220,21 @@ int main()
 		//Code for projectile.
 		if (shoot != 0 && projectile_active == 0) {
 			shoot = 0;
-			projectile_y = y - 16;
 			projectile_active = 1;
 		}
 
 		if (projectile_active != 0) {
 			putImage(projectile_x, projectile_y, 12, 16, temp_proj, 0, 0);
-			projectile_y = projectile_y - speed;
+			projectile_y = projectile_y - 1;
 			if (projectile_y <= 0) {
 				projectile_active = 0;
 				fillRectangle(x, 0, 12, 16, 0);
+			}
+
+			if(shoot != 0){
+				projectile_active = 0;
+				fillRectangle(old_projectile_x,old_projectile_y,12,16,0);
+				projectile_y = y - 16;
 			}
 		}
 
