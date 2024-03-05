@@ -111,6 +111,17 @@ int main()
 		//playMusic(); //Turn on for Demo
 		//End of code for the song
 
+		//Code to light up LEDs
+		//Modify pinmode and then connect wires to circuit with LED and resistor.
+		if(stage == 0){
+			//One light on or one flash
+		} else if(stage == 1){
+			//Two lights on or two flashes
+		} else {
+			//Three lights on or three flashes
+		}
+		//End of LED code
+
 		//Score and Stage code.
 		printNumber(score,0,0,255,0);
 
@@ -143,7 +154,7 @@ int main()
 		if(invader_y < 146){
 			invader_y = invader_y + speed;
 		}
-		if(invader_y == 146){
+		if(invader_y >= 146){
 			lose++;
 		}
 		// End of invader movement code.
@@ -158,6 +169,7 @@ int main()
 		while(win != 0){
 			printText("WINNER",128/2-25, 160/2-30, 255, 0);
 		}
+		//End of code for Win Screen
 
 		//Code to see if the Alien and the player collides.
 		if (isInside(x, y, 12, 16, invader_x, invader_y) || isInside(x, y, 12, 16, invader_x + 12, invader_y) || isInside(x, y, 12, 16, invader_x, invader_y + 16) || isInside(x, y, 12, 16, invader_x + 12, invader_y + 16)){
