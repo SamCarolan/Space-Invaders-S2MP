@@ -78,8 +78,10 @@ int main()
 
 	uint16_t speed = 1;
 	uint16_t lose = 0;
+	uint16_t win = 0;
+	uint16_t invader_death = 0;
 	// uint16_t stage = 0;
-	// uint16_t score = 0;
+	uint16_t score = 0;
 
 	initClock();
 	initSysTick();
@@ -107,7 +109,29 @@ int main()
 		//playMusic(); //Turn on for Demo
 		//End of code for the song
 
+		//Score and Stage code.
+		printNumber(score,0,0,255,0);
+
+		if(score >= 5 && score < 10){
+			speed = 2;
+		} else if(score >= 10 && score < 15){
+			speed = 3;
+		} else if(score >= 15){
+			win++;
+		}
+		//End of Score and Stage code.
+
 		// Code to make the invader fall down screen.
+		if(invader_death != 0){
+			fillRectangle(invader_x, invader_y,12,16,0);
+			fillRectangle(projectile_x, projectile_y,12,16,0);
+			projectile_x = x;
+			projectile_y = y - 16;
+			invader_death = 0;
+			invader_y = 0;
+			invader_x = rand() % 116;
+		}
+
 		fillRectangle(oldix,0,12,16,0);
 		oldix = invader_x;
 		putImage(invader_x, invader_y, 12,16,space_invader,0,0);
@@ -125,6 +149,11 @@ int main()
 			printText("LOSER",128/2-15, 160/2-30, 255, 0);
 		}
 		//End of code for Lose screen.
+
+		//Code for Win screen.
+		while(win != 0){
+			printText("WINNER",128/2-25, 160/2-30, 255, 0);
+		}
 
 		//Code to see if the Alien and the player collides.
 		if (isInside(x, y, 12, 16, invader_x, invader_y) || isInside(x, y, 12, 16, invader_x + 12, invader_y) || isInside(x, y, 12, 16, invader_x, invader_y + 16) || isInside(x, y, 12, 16, invader_x + 12, invader_y + 16)){
@@ -181,6 +210,7 @@ int main()
 		charReceived = 0;
 		//End of Serial Communications Code.
 
+		//Code for projectile.
 		if (shoot != 0 && projectile_active == 0) {
 			shoot = 0;
 			projectile_y = y - 16;
@@ -189,12 +219,19 @@ int main()
 
 		if (projectile_active != 0) {
 			putImage(projectile_x, projectile_y, 12, 16, temp_proj, 0, 0);
-			projectile_y--;
+			projectile_y = projectile_y - speed;
 			if (projectile_y <= 0) {
 				projectile_active = 0;
 				fillRectangle(x, 0, 12, 16, 0);
 			}
 		}
+
+		if (isInside(projectile_x, projectile_y, 12, 16, invader_x, invader_y) || isInside(projectile_x, projectile_y, 12, 16, invader_x + 12, invader_y) || isInside(projectile_x, projectile_y, 12, 16, invader_x, invader_y + 16) || isInside(projectile_x, projectile_y, 12, 16, invader_x + 12, invader_y + 16)){
+			invader_death++;
+			score++;
+			projectile_active = 0;
+		}
+		//End of projectile code.
 
 		if ((vmoved) || (hmoved))
 		{
