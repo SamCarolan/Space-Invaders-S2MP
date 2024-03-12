@@ -162,12 +162,35 @@ int main()
 		//Code for Lose screen.
 		while(lose != 0){
 			printText("LOSER",128/2-15, 160/2-30, 255, 0);
+			if(UpPressed()){
+				fillRectangle(0,0,128,160,0);
+				continuation_condition = 0;
+				lose = 0;
+				invader_death = 0;
+				invader_y = 0;
+				y = 140;
+				score = 0;
+				stage = 0;
+				speed = 1;
+				break;
+			}
 		}
 		//End of code for Lose screen.
 
 		//Code for Win screen.
 		while(win != 0){
 			printText("WINNER",128/2-25, 160/2-30, 255, 0);
+			if(UpPressed()){
+				continuation_condition = 0;
+				win = 0;
+				invader_death = 0;
+				invader_y = 0;
+				y = 140;
+				score = 0;
+				stage = 0;
+				speed = 1;
+				break;
+			}
 		}
 		//End of code for Win Screen
 
