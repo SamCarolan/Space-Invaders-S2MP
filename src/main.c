@@ -19,6 +19,9 @@ int DownPressed(void);
 int LeftPressed(void);
 int RightPressed(void);
 
+void LEDOn(void);
+void LEDOff(void);
+
 volatile uint32_t milliseconds;
 
 const uint16_t space_invader[] = 
@@ -121,11 +124,20 @@ int main()
 		//Code to light up LEDs
 		//Modify pinmode and then connect wires to circuit with LED and resistor.
 		if(stage == 0){
-			//One light on or one flash
+			for(int i = 0; i < stage; i++){
+				LEDOn();
+				LEDOff();
+			}
 		} else if(stage == 1){
-			//Two lights on or two flashes
+			for(int i = 0; i < stage; i++){
+				LEDOn();
+				LEDOff();
+			}
 		} else {
-			//Three lights on or three flashes
+			for(int i = 0; i < stage; i++){
+				LEDOn();
+				LEDOff();
+			}
 		}
 		//End of LED code
 
@@ -255,7 +267,7 @@ int main()
 		//End of Serial Communications Code.
 
 		//Code for projectile.
-		if (shoot != 0 && projectile_active == 0) {
+		if (shoot != 0 && projectile_active == 0 && continuation_condition != 0){
 			shoot = 0;
 			projectile_active = 1;
 		}
@@ -374,6 +386,7 @@ void setupIO()
 	pinMode(GPIOB,5,0);
 	pinMode(GPIOA,8,0);
 	pinMode(GPIOA,11,0);
+	pinMode(GPIOA,12,1);
 	enablePullUp(GPIOB,4);
 	enablePullUp(GPIOB,5);
 	enablePullUp(GPIOA,11);
@@ -414,4 +427,12 @@ int RightPressed(){
 	else{
 		return 0;
 	}
+}
+
+void LEDOn(){
+	GPIOA->ODR |= (1 << 12);
+}
+
+void LEDOff(){
+	GPIOA->ODR &= ~(1 << 12);
 }
