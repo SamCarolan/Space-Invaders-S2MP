@@ -517,14 +517,8 @@ void printNumber(uint16_t Number, uint16_t x, uint16_t y, uint16_t ForeColour, u
 {
 	// This function converts the supplied number into a character string and then calls on puText to
     // write it to the display
-    char Buffer[6]; // Maximum value = 65535
-    Buffer[5]=0;
-    Buffer[4] = Number % 10 + '0';
-    Number = Number / 10;
-    Buffer[3] = Number % 10 + '0';
-    Number = Number / 10;
-    Buffer[2] = Number % 10 + '0';
-    Number = Number / 10;
+    char Buffer[3];
+    Buffer[2] = 0;
     Buffer[1] = Number % 10 + '0';
     Number = Number / 10;
     Buffer[0] = Number % 10 + '0';

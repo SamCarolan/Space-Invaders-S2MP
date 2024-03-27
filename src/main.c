@@ -52,6 +52,7 @@ int main()
 	uint16_t oldy = y;
 
 	uint16_t continuation_condition = 0;
+	uint16_t count = 0;
 
 	uint16_t animation = 0;
 	uint16_t invader_x = rand() % 116;
@@ -122,27 +123,38 @@ int main()
 		//End of code for the song
 
 		//Code to light up LEDs
-		//Modify pinmode and then connect wires to circuit with LED and resistor.
-		if(stage == 0){
-			for(int i = 0; i < stage; i++){
-				LEDOn();
-				LEDOff();
-			}
-		} else if(stage == 1){
-			for(int i = 0; i < stage; i++){
-				LEDOn();
-				LEDOff();
-			}
-		} else {
-			for(int i = 0; i < stage; i++){
-				LEDOn();
-				LEDOff();
-			}
-		}
+		if(stage == 0 && count == 0) {
+            LEDOn();
+            delay(100); 
+            LEDOff();
+            delay(100);
+			count++;
+        } else if(stage == 1 && count == 1) {
+            for(int i = 0; i < 2; i++) {
+                LEDOn();
+                delay(100);
+                LEDOff();
+                delay(100); 
+            }
+			count++;
+        } else if(stage == 2 && count == 2) {
+            for(int i = 0; i < 3; i++) {
+                LEDOn();
+                delay(100); 
+                LEDOff();
+                delay(100);
+            }
+			count = 0;
+        }
 		//End of LED code
 
 		//Score and Stage code.
-		printNumber(score,0,140,255,0);
+		fillRectangle(0,145,160,1,255);
+		fillRectangle(0,140,160,1,255);
+		printText("Score:",0,150,255,0);
+		printNumber(score,40,150,255,0);
+		printText("Stage:",75,150,255,0);
+		printNumber(stage+1,115,150,2555,0);
 
 		if(score >= 5 && score < 10){
 			stage = 1;
@@ -192,6 +204,7 @@ int main()
 			if(UpPressed()){
 				fillRectangle(0,0,128,160,0);
 				continuation_condition = 0;
+				count = 0;
 				lose = 0;
 				invader_death = 0;
 				invader_y = 0;
