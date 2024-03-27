@@ -43,11 +43,8 @@ const uint16_t projectile[] =
 
 int main()
 {
-	int toggle = 0;
-	int hmoved = 0;
-	int vmoved = 0;
 	uint16_t x = 64;
-	uint16_t y = 140;
+	uint16_t y = 120;
 	uint16_t oldx = x;
 	uint16_t oldy = y;
 
@@ -133,7 +130,7 @@ int main()
 		//End of LED code
 
 		//Score and Stage code.
-		printNumber(score,0,0,255,0);
+		printNumber(score,0,140,255,0);
 
 		if(score >= 5 && score < 10){
 			stage = 1;
@@ -170,7 +167,7 @@ int main()
 		if(invader_y < 146){
 			invader_y = invader_y + speed;
 		}
-		if(invader_y >= 146){
+		if(invader_y >= 124){
 			lose++;
 		}
 		// End of invader movement code.
@@ -186,7 +183,8 @@ int main()
 				lose = 0;
 				invader_death = 0;
 				invader_y = 0;
-				y = 140;
+				x = 64;
+				y = 120;
 				score = 0;
 				stage = 0;
 				speed = 1;
@@ -206,7 +204,8 @@ int main()
 				win = 0;
 				invader_death = 0;
 				invader_y = 0;
-				y = 140;
+				x = 64;
+				y = 120;
 				score = 0;
 				stage = 0;
 				speed = 1;
@@ -220,9 +219,6 @@ int main()
 			lose++;
 		}
 		//End of player Alien collision code.
-
-
-		hmoved = vmoved = 0;
 
 		//Serial Communications Code.
 		char receivedChar = 0;
@@ -238,29 +234,14 @@ int main()
 		if (RightPressed() == 1 || receivedChar == 'd' || receivedChar == 'D') {
 			if (x < 115) {
 				x = x + 3;
-				hmoved = 1;
 			}
 		} 
 		if (LeftPressed() == 1 || receivedChar == 'a' || receivedChar == 'A') {
 			if (x > 1) {
 				x = x - 3;
-				hmoved = 1;
 			}
 		} 
-		if (UpPressed() == 1 || receivedChar == 'w' || receivedChar == 'W') {
-			if (y > 16) {
-				y = y - 3;
-				vmoved = 1;
-			}
-		} 
-		if (DownPressed() == 1 || receivedChar == 's' || receivedChar == 'S') {
-			if (y < 140) {
-				y = y + 3;
-				vmoved = 1;
-			}
-		}
-		if(receivedChar == ' '){
-			printText("Shoot",128/2-15, 160/2-30, 255, 0);
+		if(receivedChar == ' ' || UpPressed()){
 			old_projectile_x = projectile_x;
 			old_projectile_y = projectile_y;
 			projectile_x = x;
@@ -300,27 +281,10 @@ int main()
 			projectile_active = 0;
 		}
 		//End of projectile code.
-
-		if ((vmoved) || (hmoved))
-		{
-			// only redraw if there has been some movement (reduces flicker)
-			fillRectangle(oldx,oldy,12,16,0);
-			oldx = x;
-			oldy = y;					
-			if (hmoved)
-			{
-				if (toggle)
-					putImage(x,y,12,16,space_ship,0,0);
-				else
-					putImage(x,y,12,16,space_ship,0,0);
-				
-				toggle = toggle ^ 1;
-			}
-			else
-			{
-				putImage(x,y,12,16,space_ship,0,0);
-			}
-		}		
+		fillRectangle(oldx,oldy,12,16,0);
+		oldx = x;
+		oldy = y;					
+		putImage(x,y,12,16,space_ship,0,0);
 		delay(50);
 	}
 	return 0;
