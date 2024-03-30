@@ -34,16 +34,6 @@ const uint16_t space_invader_ani[] =
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9293,0,0,9293,0,0,0,0,0,0,0,9293,0,0,0,0,9293,0,0,0,0,0,9293,9293,9293,9293,9293,9293,9293,9293,0,0,0,9293,9293,0,9293,9293,9293,9293,0,9293,9293,0,9293,9293,9293,9293,9293,9293,9293,9293,9293,9293,9293,9293,9293,0,9293,9293,9293,9293,9293,9293,9293,9293,0,9293,9293,0,9293,0,0,0,0,0,0,9293,0,9293,0,0,0,9293,0,0,0,0,9293,0,0,0,0,0,0,9293,0,0,0,0,9293,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 };
 
-const uint16_t second_space_invader[] = 
-{
-	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9293,0,0,0,0,0,0,9293,0,0,0,0,0,9293,0,0,0,0,9293,0,0,0,0,0,9293,9293,9293,9293,9293,9293,9293,9293,0,0,0,9293,9293,0,9293,9293,9293,9293,0,9293,9293,0,9293,9293,9293,9293,9293,9293,9293,9293,9293,9293,9293,9293,9293,0,9293,9293,9293,9293,9293,9293,9293,9293,0,9293,9293,0,9293,0,0,0,0,0,0,9293,0,9293,0,0,0,9293,9293,0,0,9293,9293,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-};
-
-const uint16_t second_space_invader_ani[] = 
-{
-	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9293,0,0,9293,0,0,0,0,0,0,0,9293,0,0,0,0,9293,0,0,0,0,0,9293,9293,9293,9293,9293,9293,9293,9293,0,0,0,9293,9293,0,9293,9293,9293,9293,0,9293,9293,0,9293,9293,9293,9293,9293,9293,9293,9293,9293,9293,9293,9293,9293,0,9293,9293,9293,9293,9293,9293,9293,9293,0,9293,9293,0,9293,0,0,0,0,0,0,9293,0,9293,0,0,0,9293,0,0,0,0,9293,0,0,0,0,0,0,9293,0,0,0,0,9293,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-};
-
 const uint16_t space_ship[] =
 {
 	0,0,0,0,0,65535,65535,0,0,0,0,0,0,0,0,0,0,65535,65535,0,0,0,0,0,0,0,0,0,65535,65535,65535,65535,0,0,0,0,0,0,0,0,65535,65535,65535,65535,0,0,0,0,0,0,0,0,65535,65535,65535,65535,0,0,0,0,0,0,0,0,65535,65535,65535,65535,0,0,0,0,0,0,0,0,65535,65535,65535,65535,0,0,0,0,0,0,0,65535,65535,65535,65535,65535,65535,0,0,0,0,0,0,65535,65535,65535,65535,65535,65535,0,0,0,0,0,0,65535,0,65535,65535,0,65535,0,0,0,0,0,0,65535,65535,65535,65535,65535,65535,0,0,0,65535,0,0,65535,65535,65535,65535,65535,65535,0,0,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,0,0,0,65535,65535,0,0,0,65535,65535,0,65535,0,0,0,65535,65535,0,0,0,65535,0,
@@ -67,10 +57,7 @@ int main()
 	uint16_t animation = 0;
 	uint16_t invader_x = rand() % 116;
 	uint16_t invader_y = 0;
-	uint16_t second_invader_x = rand() % 116;
-	uint16_t second_invader_y = 0;
 	uint16_t oldix = invader_x;
-	uint16_t oldix_2 = second_invader_x;
 	uint16_t shoot = 0;
 
 	uint16_t projectile_x;
@@ -83,7 +70,6 @@ int main()
 	uint16_t lose = 0;
 	uint16_t win = 0;
 	uint16_t invader_death = 0;
-	uint16_t second_invader_death = 0;
 	uint16_t stage = 0;
 	uint16_t score = 0;
 
@@ -98,11 +84,6 @@ int main()
 	putImage(x,y,12,16,space_ship,0,0);
 
 	//this while loop ensures that the two space invaders do not spawn directly ontop one another
-	while(second_invader_x = invader_x)
-	{
-		second_invader_x = rand() % 116;
-
-	}
 
 	while(1)
 	{
@@ -199,25 +180,13 @@ int main()
 			invader_x = rand() % 116;
 		}
 
-		if(second_invader_death != 0){
-			fillRectangle(invader_x, invader_y,12,16,0);
-			fillRectangle(projectile_x, projectile_y,12,16,0);
-			projectile_x = x;
-			projectile_y = y - 16;
-			invader_death = 0;
-			invader_y = 0;
-			invader_x = rand() % 116;
-		}
-
 		fillRectangle(oldix,0,12,16,0);
 		oldix = invader_x;
 
 		if(animation % 3 != 0){
 			putImage(invader_x, invader_y, 12, 16, space_invader_ani, 0, 0);
-			putImage(invader_x, invader_y, 12, 16, second_space_invader_ani, 0, 0);
 		} else {
 			putImage(invader_x, invader_y, 12, 16, space_invader, 0, 0);
-			putImage(invader_x, invader_y, 12, 16, second_space_invader, 0, 0);
 		}
 		animation++;
 		
@@ -262,7 +231,6 @@ int main()
 				continuation_condition = 0;
 				win = 0;
 				invader_death = 0;
-				second_invader_death
 				invader_y = 0;
 				x = 64;
 				y = 120;
@@ -279,9 +247,6 @@ int main()
 			lose++;
 		}
 
-		if (isInside(x, y, 12, 16, second_invader_x, second_invader_y) || isInside(x, y, 12, 16, second_invader_x + 12, second_invader_y) || isInside(x, y, 12, 16, second_invader_x, second_invader_y + 16) || isInside(x, y, 12, 16, second_invader_x + 12, second_invader_y + 16)){
-			lose++;
-		}
 		//End of player Alien collision code.
 
 		//Serial Communications Code.
@@ -344,12 +309,7 @@ int main()
 			score++;
 			projectile_active = 0;
 		}
-
-		if (isInside(projectile_x, projectile_y, 12, 16, second_invader_x, second_invader_y) || isInside(projectile_x, projectile_y, 12, 16, second_invader_x + 12, second_invader_y) || isInside(projectile_x, projectile_y, 12, 16, second_invader_x, second_invader_y + 16) || isInside(projectile_x, projectile_y, 12, 16, second_invader_x + 12, second_invader_y + 16)){
-			second_invader_death++;
-			score++;
-			projectile_active = 0;
-		}
+		
 		//End of projectile code.
 		fillRectangle(oldx,oldy,12,16,0);
 		fillRectangle(oldix_2,oldy,12,16,0);
