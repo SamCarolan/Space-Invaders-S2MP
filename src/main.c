@@ -209,7 +209,6 @@ int main()
 				count = 0;
 				lose = 0;
 				invader_death = 0;
-				second_invader_death = 0;
 				invader_y = 0;
 				x = 64;
 				y = 120;
@@ -270,7 +269,7 @@ int main()
 				x = x - 3;
 			}
 		} 
-		if(receivedChar == ' ' || UpPressed()){
+		if(receivedChar == 'w' || receivedChar == 'W' || UpPressed() == 1){
 			old_projectile_x = projectile_x;
 			old_projectile_y = projectile_y;
 			projectile_x = x;
@@ -312,7 +311,6 @@ int main()
 		
 		//End of projectile code.
 		fillRectangle(oldx,oldy,12,16,0);
-		fillRectangle(oldix_2,oldy,12,16,0);
 		oldx = x;
 		oldy = y;					
 		putImage(x,y,12,16,space_ship,0,0);
